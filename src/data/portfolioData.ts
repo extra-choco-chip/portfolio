@@ -49,6 +49,14 @@ export const ISHANA_PROFILE = {
   degree: 'B.Tech in Electronics and Telecommunications Engineering',
   tagline: 'Engineering student by day, curious problem-solver by default, and collector of side quests at all times.',
   bio: "I am an engineering student at Cummins College of Engineering for Women, Pune, pursuing my B.Tech in Electronics and Telecommunications. My core passion lies at the intersection of competitive programming, algorithms, and thoughtful frontend development. I love building things with code—from algorithm problem-solving notebooks to playful, interactive web experiences like this digital journal.",
+  socials: {
+    github: 'https://github.com/ishanadatta',
+    linkedin: 'https://linkedin.com/in/ishana-datta',
+    codeforces: 'https://codeforces.com/profile/ishana_datta',
+    codechef: 'https://www.codechef.com/users/ishana_datta',
+    leetcode: 'https://leetcode.com/ishanadatta',
+  },
+  resumeUrl: '#resume-download',
   skills: {
     languages: [
       { name: 'C++', level: 'Primary language for CP & problem solving', tag: 'Building with' },
