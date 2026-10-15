@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { PageId } from '../types';
 import { JournalTabs } from './JournalTabs';
+import { ASSET_IMAGES } from '../assets/images';
 import { playTactileClick, playStampSound } from '../utils/audio';
 
 interface ExperimentsScreenProps {
@@ -18,6 +20,7 @@ export const ExperimentsScreen: React.FC<ExperimentsScreenProps> = ({ onNavigate
     'Build a peer study group matcher using stable matching algorithms.',
   ];
   const [currentPromptIdx, setCurrentPromptIdx] = useState(0);
+  const [jarShaking, setJarShaking] = useState(false);
 
   // Tiny Fortune Archive State
   const fortunes = [
@@ -42,7 +45,11 @@ export const ExperimentsScreen: React.FC<ExperimentsScreenProps> = ({ onNavigate
 
   const handleDrawIdea = () => {
     playTactileClick();
-    setCurrentPromptIdx((prev) => (prev + 1) % creativePrompts.length);
+    setJarShaking(true);
+    setTimeout(() => {
+      setCurrentPromptIdx((prev) => (prev + 1) % creativePrompts.length);
+      setJarShaking(false);
+    }, 280);
   };
 
   const handleOpenFortune = () => {
@@ -75,16 +82,23 @@ export const ExperimentsScreen: React.FC<ExperimentsScreenProps> = ({ onNavigate
         <div className="w-3 h-0.5 bg-[#805365]/60 rotate-12 shadow-2xs" />
       </div>
 
-      {/* Optional Messy Stickers Overlay */}
-      {isMessy && (
-        <div className="absolute inset-0 pointer-events-none z-30">
-          <div className="absolute top-12 left-16 text-2xl rotate-12">🌸</div>
-          <div className="absolute bottom-20 left-1/4 text-2xl -rotate-12">✨</div>
-          <div className="absolute top-1/3 right-20 text-3xl rotate-45">🎀</div>
-          <div className="absolute bottom-16 right-1/3 text-2xl -rotate-6">🪻</div>
-          <div className="absolute top-20 right-1/2 text-2xl rotate-[-20deg]">☕</div>
-        </div>
-      )}
+      {/* Optional Messy Stickers Overlay with Framer Motion */}
+      <AnimatePresence>
+        {isMessy && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 pointer-events-none z-30 overflow-hidden"
+          >
+            <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="absolute top-12 left-16 text-3xl rotate-12">🌸</motion.div>
+            <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="absolute bottom-20 left-1/4 text-3xl -rotate-12">✨</motion.div>
+            <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="absolute top-1/3 right-20 text-4xl rotate-45">🎀</motion.div>
+            <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="absolute bottom-16 right-1/3 text-3xl -rotate-6">🪻</motion.div>
+            <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="absolute top-20 right-1/2 text-3xl rotate-[-20deg]">☕</motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* LEFT PAGE - The Idea Jar & Moodboard Shuffle */}
       <section className="w-full md:w-1/2 min-h-[660px] md:min-h-[740px] p-6 sm:p-10 md:p-12 relative bg-[#FFF8F0] bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#FFFEFC] via-[#FFF8F0] to-[#ED9BB8]/20 rounded-l-sm overflow-hidden z-10 border-b md:border-b-0 md:border-r border-[#D8B5BD] flex flex-col justify-between">
@@ -97,9 +111,9 @@ export const ExperimentsScreen: React.FC<ExperimentsScreenProps> = ({ onNavigate
               </span>
               <button
                 onClick={toggleMess}
-                className="text-[10px] font-accent-handwritten text-[#805365] bg-[#F8D7E2] px-2 py-0.5 rounded-xs border border-[#D8B5BD] cursor-pointer hover:bg-[#F2BFCF]"
+                className="text-[10px] font-accent-handwritten text-[#805365] bg-[#F8D7E2] px-2.5 py-0.5 rounded-xs border border-[#D8B5BD] cursor-pointer hover:bg-[#F2BFCF] font-bold transition-colors"
               >
-                {isMessy ? '🧹 Clean Desk' : '🎀 Make a Mess'}
+                {isMessy ? '🧹 Clean Desk' : '🎀 Scatter Stickers'}
               </button>
             </div>
             <h2 className="font-display-lg text-2xl sm:text-3xl text-[#805365] font-bold tracking-tight mt-0.5">
@@ -110,53 +124,85 @@ export const ExperimentsScreen: React.FC<ExperimentsScreenProps> = ({ onNavigate
             </p>
           </div>
 
-          {/* Toy 1: The Idea Jar */}
-          <div className="p-4 bg-[#FFFEFC] rounded-xs border-2 border-[#B97891] shadow-tactile mb-5 rotate-[-1deg]">
+          {/* Toy 1: The Idea Jar with Shake Animation */}
+          <motion.div
+            animate={jarShaking ? { rotate: [-6, 6, -4, 4, 0], scale: 1.03 } : { rotate: -1, scale: 1 }}
+            transition={{ duration: 0.3 }}
+            className="p-4 bg-[#FFFEFC] rounded-xs border-2 border-[#B97891] shadow-tactile mb-5"
+          >
             <div className="flex items-center justify-between mb-2 pb-1 border-b border-dashed border-[#D8B5BD]">
               <span className="font-label-sm text-[10px] text-[#805365] uppercase tracking-wider font-bold">
                 ✦ Interaction 01: The Idea Jar
               </span>
-              <button
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
                 onClick={handleDrawIdea}
                 className="px-2.5 py-1 bg-[#F8D7E2] hover:bg-[#ED9BB8] text-[#805365] font-accent-handwritten text-xs rounded-xs border border-[#D8B5BD] shadow-2xs cursor-pointer flex items-center gap-1 font-bold"
               >
                 <span>Draw Prompt</span>
                 <span className="material-symbols-outlined text-xs">autorenew</span>
-              </button>
+              </motion.button>
             </div>
 
-            <p className="font-accent-handwritten text-xl text-[#44343B] leading-snug my-2 min-h-[50px] flex items-center">
-              "{creativePrompts[currentPromptIdx]}"
-            </p>
+            <AnimatePresence mode="wait">
+              <motion.p
+                key={currentPromptIdx}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.2 }}
+                className="font-accent-handwritten text-xl text-[#44343B] leading-snug my-2 min-h-[50px] flex items-center"
+              >
+                "{creativePrompts[currentPromptIdx]}"
+              </motion.p>
+            </AnimatePresence>
 
             <span className="text-[10px] font-label-sm text-[#805365]/70 text-right block">
               Prompt #{currentPromptIdx + 1} of {creativePrompts.length}
             </span>
-          </div>
+          </motion.div>
 
-          {/* Toy 2: Moodboard Shuffle */}
+          {/* Toy 2: Moodboard Shuffle & Ceramic Palette Integration */}
           <div className="p-4 bg-[#FFFEFC] rounded-xs border border-[#D8B5BD] shadow-xs rotate-[0.5deg]">
             <div className="flex items-center justify-between mb-2 pb-1 border-b border-dashed border-[#D8B5BD]">
               <span className="font-label-sm text-[10px] text-[#805365] uppercase tracking-wider font-bold">
                 ✦ Interaction 02: Moodboard Shuffle
               </span>
-              <button
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
                 onClick={handleShuffleMoodboard}
-                className="px-2.5 py-1 bg-[#F5EBCB] hover:bg-[#F8D7E2] text-[#44343B] font-accent-handwritten text-xs rounded-xs border border-[#D8B5BD] shadow-2xs cursor-pointer flex items-center gap-1"
+                className="px-2.5 py-1 bg-[#F5EBCB] hover:bg-[#F8D7E2] text-[#44343B] font-accent-handwritten text-xs rounded-xs border border-[#D8B5BD] shadow-2xs cursor-pointer flex items-center gap-1 font-bold"
               >
                 <span>Shuffle Palette</span>
                 <span className="material-symbols-outlined text-xs">shuffle</span>
-              </button>
+              </motion.button>
             </div>
 
-            <span className="font-accent-handwritten text-base text-[#805365] block mb-2 font-bold">
-              Palette: {palettes[paletteIdx].name}
-            </span>
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-14 h-14 rounded-xs overflow-hidden border border-[#D8B5BD] bg-[#FFF8F0] shrink-0 shadow-2xs">
+                <img
+                  src={ASSET_IMAGES.ceramicPalette}
+                  alt="Ceramic Palette and Pigments"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="flex-1">
+                <span className="font-accent-handwritten text-base text-[#805365] block font-bold">
+                  Active Palette: {palettes[paletteIdx].name}
+                </span>
+                <span className="text-[10px] font-label-sm text-[#44343B]/70 block">
+                  Studio pigment swatch & color harmony
+                </span>
+              </div>
+            </div>
 
             <div className="flex gap-2 h-10 rounded-xs overflow-hidden border border-[#D8B5BD] p-1 bg-[#FFF8F0]">
               {palettes[paletteIdx].colors.map((c, i) => (
-                <div
-                  key={i}
+                <motion.div
+                  key={c}
+                  layout
                   style={{ backgroundColor: c }}
                   className="flex-1 rounded-2xs border border-black/10 shadow-inner flex items-end justify-center pb-0.5"
                   title={c}
@@ -164,7 +210,7 @@ export const ExperimentsScreen: React.FC<ExperimentsScreenProps> = ({ onNavigate
                   <span className="text-[8px] font-mono text-black/60 bg-white/70 px-0.5 rounded-2xs">
                     {c}
                   </span>
-                </div>
+                </motion.div>
               ))}
             </div>
           </div>
@@ -174,7 +220,7 @@ export const ExperimentsScreen: React.FC<ExperimentsScreenProps> = ({ onNavigate
         <div className="pt-3 border-t border-[#D8B5BD] flex items-center justify-between text-xs font-label-sm text-[#805365]">
           <span>Every experiment is locally interactive</span>
           <span className="font-accent-handwritten text-sm text-[#B97891]">
-            No server calls needed
+            Curiosity-driven prototyping
           </span>
         </div>
       </section>
@@ -195,8 +241,10 @@ export const ExperimentsScreen: React.FC<ExperimentsScreenProps> = ({ onNavigate
             </p>
           </div>
 
-          {/* Interactive Envelope */}
-          <div
+          {/* Interactive Envelope with Spring Pop */}
+          <motion.div
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
             onClick={handleOpenFortune}
             className="p-5 bg-[#FFFEFC] rounded-xs border-2 border-[#D8B5BD] hover:border-[#805365] shadow-tactile text-center cursor-pointer group mb-5 transition-all"
           >
@@ -208,20 +256,28 @@ export const ExperimentsScreen: React.FC<ExperimentsScreenProps> = ({ onNavigate
               {currentFortuneIdx !== null ? 'Your Developer Fortune:' : 'Open the Archival Seal'}
             </h4>
 
-            {currentFortuneIdx !== null ? (
-              <p className="font-accent-handwritten text-xl text-[#44343B] my-3 p-3 bg-[#FFF8F0] rounded-xs border border-dashed border-[#B97891] animate-fade-in leading-snug">
-                "{fortunes[currentFortuneIdx]}"
-              </p>
-            ) : (
-              <p className="font-accent-handwritten text-base text-[#B97891] my-2">
-                Click to break the wax seal and draw your note
-              </p>
-            )}
+            <AnimatePresence mode="wait">
+              {currentFortuneIdx !== null ? (
+                <motion.p
+                  key={currentFortuneIdx}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  className="font-accent-handwritten text-xl text-[#44343B] my-3 p-3 bg-[#FFF8F0] rounded-xs border border-dashed border-[#B97891] leading-snug shadow-2xs"
+                >
+                  "{fortunes[currentFortuneIdx]}"
+                </motion.p>
+              ) : (
+                <p className="font-accent-handwritten text-base text-[#B97891] my-2">
+                  Click to break the wax seal and draw your note
+                </p>
+              )}
+            </AnimatePresence>
 
-            <span className="text-[10px] font-label-sm uppercase tracking-wider text-[#805365] bg-[#F8D7E2] px-2.5 py-1 rounded-xs inline-block">
+            <span className="text-[10px] font-label-sm uppercase tracking-wider text-[#805365] bg-[#F8D7E2] px-2.5 py-1 rounded-xs inline-block font-semibold">
               {currentFortuneIdx !== null ? 'Draw Another Fortune' : 'Break Wax Seal'}
             </span>
-          </div>
+          </motion.div>
 
           {/* Creative Technology Note */}
           <div className="p-4 bg-[#FFF8F0] rounded-xs border border-[#D8B5BD] shadow-2xs">
