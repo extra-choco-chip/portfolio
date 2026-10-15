@@ -27,6 +27,12 @@ export default function App() {
   const [isFlipping, setIsFlipping] = useState(false);
   const [isPageMapOpen, setIsPageMapOpen] = useState(false);
   const [candlelightMode, setCandlelightMode] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setInitialLoading(false), 550);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Selected project for detailed dossier modal
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
