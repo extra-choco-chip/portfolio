@@ -19,6 +19,7 @@ import { AddMemoryModal } from './components/AddMemoryModal';
 import { PageMapModal } from './components/PageMapModal';
 import { SpreadNavigator } from './components/SpreadNavigator';
 import { MobileBottomNav } from './components/MobileBottomNav';
+import { BotanicalPetalsCanvas } from './components/BotanicalPetalsCanvas';
 import { playPageFlipSound, playTactileClick } from './utils/audio';
 
 export default function App() {
@@ -212,6 +213,9 @@ export default function App() {
       >
         Skip to main content
       </a>
+
+      {/* Interactive 3D Three.js Botanical Petals & Gold Dust Canvas */}
+      <BotanicalPetalsCanvas candlelightMode={candlelightMode} />
 
       {/* Candlelight Ambient Glow Overlay */}
       {candlelightMode && (
