@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { PageId } from '../types';
 import { JournalTabs } from './JournalTabs';
 import { TIMELINE_ENTRIES, ISHANA_PROFILE } from '../data/portfolioData';
@@ -52,25 +53,32 @@ export const JourneyScreen: React.FC<JourneyScreenProps> = ({ onNavigate }) => {
             </p>
           </div>
 
-          {/* Timeline Entries */}
-          <div className="relative pl-6 space-y-4 before:absolute before:left-2 before:top-2 before:bottom-2 before:w-0.5 before:bg-[#D8B5BD] before:border-r before:border-dashed before:border-[#B97891]">
-            {TIMELINE_ENTRIES.map((entry) => {
+          {/* Timeline Entries with Staggered Framer Motion */}
+          <div className="relative pl-6 space-y-3.5 before:absolute before:left-2 before:top-2 before:bottom-2 before:w-0.5 before:bg-[#D8B5BD] before:border-r before:border-dashed before:border-[#B97891]">
+            {TIMELINE_ENTRIES.map((entry, idx) => {
               const isSelected = selectedMilestone === entry.id;
               const isStamped = stampedList.includes(entry.id);
 
               return (
-                <div
+                <motion.div
                   key={entry.id}
+                  initial={{ opacity: 0, x: -16 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: idx * 0.08, duration: 0.3 }}
+                  whileHover={{ scale: 1.015, x: 2 }}
                   onClick={() => handleMilestoneClick(entry.id)}
                   className={`relative p-3.5 bg-[#FFFEFC] rounded-xs border transition-all duration-300 cursor-pointer shadow-2xs hover:shadow-tactile group ${
                     isSelected
-                      ? 'border-[#805365] bg-[#FFF8F0] scale-101 ring-1 ring-[#805365]/30'
+                      ? 'border-[#805365] bg-[#FFF8F0] ring-1 ring-[#805365]/30'
                       : 'border-[#D8B5BD] hover:border-[#B97891]'
                   }`}
                 >
-                  {/* Pin Dot on Timeline Spine */}
+                  {/* Pin Dot on Timeline Spine with subtle pulse */}
                   <div className="absolute -left-[27px] top-4 w-3.5 h-3.5 rounded-full bg-[#FFF8F0] border-2 border-[#805365] shadow-xs flex items-center justify-center">
                     <div className="w-1.5 h-1.5 rounded-full bg-[#805365]" />
+                    {isSelected && (
+                      <div className="absolute inset-0 rounded-full bg-[#ED9BB8]/50 animate-ping opacity-60" />
+                    )}
                   </div>
 
                   <div className="flex items-center justify-between mb-1">
@@ -94,11 +102,15 @@ export const JourneyScreen: React.FC<JourneyScreenProps> = ({ onNavigate }) => {
 
                   {/* Stamp mark */}
                   {isStamped && (
-                    <div className="absolute top-2 right-2 text-[10px] font-mono text-[#805365] opacity-40 rotate-12 pointer-events-none">
+                    <motion.div
+                      initial={{ scale: 2, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 0.5 }}
+                      className="absolute top-2 right-2 text-[10px] font-mono text-[#805365] rotate-12 pointer-events-none"
+                    >
                       [VERIFIED]
-                    </div>
+                    </motion.div>
                   )}
-                </div>
+                </motion.div>
               );
             })}
           </div>
@@ -132,7 +144,7 @@ export const JourneyScreen: React.FC<JourneyScreenProps> = ({ onNavigate }) => {
           {/* Grid of 4 Active Notebook Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5">
             {/* Learning */}
-            <div className="p-3.5 bg-[#FFFEFC] rounded-xs border border-[#D8B5BD] shadow-2xs rotate-[-0.5deg]">
+            <motion.div whileHover={{ scale: 1.02 }} className="p-3.5 bg-[#FFFEFC] rounded-xs border border-[#D8B5BD] shadow-2xs rotate-[-0.5deg]">
               <div className="flex items-center gap-1.5 mb-1.5 pb-1 border-b border-dashed border-[#D8B5BD]">
                 <span className="text-sm">📖</span>
                 <span className="font-label-sm text-[10px] uppercase tracking-wider text-[#805365] font-bold">
@@ -142,10 +154,10 @@ export const JourneyScreen: React.FC<JourneyScreenProps> = ({ onNavigate }) => {
               <p className="font-body-md text-xs text-[#44343B] leading-relaxed">
                 {ISHANA_PROFILE.currentlyInNotebook.learning}
               </p>
-            </div>
+            </motion.div>
 
             {/* Building */}
-            <div className="p-3.5 bg-[#FFFEFC] rounded-xs border border-[#D8B5BD] shadow-2xs rotate-[0.5deg]">
+            <motion.div whileHover={{ scale: 1.02 }} className="p-3.5 bg-[#FFFEFC] rounded-xs border border-[#D8B5BD] shadow-2xs rotate-[0.5deg]">
               <div className="flex items-center gap-1.5 mb-1.5 pb-1 border-b border-dashed border-[#D8B5BD]">
                 <span className="text-sm">⚡</span>
                 <span className="font-label-sm text-[10px] uppercase tracking-wider text-[#805365] font-bold">
@@ -155,10 +167,10 @@ export const JourneyScreen: React.FC<JourneyScreenProps> = ({ onNavigate }) => {
               <p className="font-body-md text-xs text-[#44343B] leading-relaxed">
                 {ISHANA_PROFILE.currentlyInNotebook.building}
               </p>
-            </div>
+            </motion.div>
 
             {/* Challenge */}
-            <div className="p-3.5 bg-[#FFFEFC] rounded-xs border border-[#D8B5BD] shadow-2xs rotate-[0.5deg]">
+            <motion.div whileHover={{ scale: 1.02 }} className="p-3.5 bg-[#FFFEFC] rounded-xs border border-[#D8B5BD] shadow-2xs rotate-[0.5deg]">
               <div className="flex items-center gap-1.5 mb-1.5 pb-1 border-b border-dashed border-[#D8B5BD]">
                 <span className="text-sm">⚖️</span>
                 <span className="font-label-sm text-[10px] uppercase tracking-wider text-[#805365] font-bold">
@@ -168,10 +180,10 @@ export const JourneyScreen: React.FC<JourneyScreenProps> = ({ onNavigate }) => {
               <p className="font-body-md text-xs text-[#44343B] leading-relaxed">
                 {ISHANA_PROFILE.currentlyInNotebook.challenge}
               </p>
-            </div>
+            </motion.div>
 
             {/* Next Explore */}
-            <div className="p-3.5 bg-[#FFFEFC] rounded-xs border border-[#D8B5BD] shadow-2xs rotate-[-0.5deg]">
+            <motion.div whileHover={{ scale: 1.02 }} className="p-3.5 bg-[#FFFEFC] rounded-xs border border-[#D8B5BD] shadow-2xs rotate-[-0.5deg]">
               <div className="flex items-center gap-1.5 mb-1.5 pb-1 border-b border-dashed border-[#D8B5BD]">
                 <span className="text-sm">🔭</span>
                 <span className="font-label-sm text-[10px] uppercase tracking-wider text-[#805365] font-bold">
@@ -181,7 +193,7 @@ export const JourneyScreen: React.FC<JourneyScreenProps> = ({ onNavigate }) => {
               <p className="font-body-md text-xs text-[#44343B] leading-relaxed">
                 {ISHANA_PROFILE.currentlyInNotebook.nextExplore}
               </p>
-            </div>
+            </motion.div>
           </div>
 
           {/* Handwritten Personal Reflection Card with washi tape */}
@@ -193,7 +205,7 @@ export const JourneyScreen: React.FC<JourneyScreenProps> = ({ onNavigate }) => {
             <p className="font-body-md text-xs sm:text-sm text-[#44343B] leading-relaxed mb-2">
               For me, competitive programming and frontend engineering are two sides of the same coin: one trains sharp precision and algorithmic rigor, while the other gives shape, empathy, and tactile joy to human users.
             </p>
-            <p className="font-accent-handwritten text-base text-[#805365] text-right">
+            <p className="font-accent-handwritten text-base text-[#805365] text-right font-semibold">
               — Ishana Datta
             </p>
           </div>
