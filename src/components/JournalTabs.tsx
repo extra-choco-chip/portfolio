@@ -15,10 +15,13 @@ export const JournalTabs: React.FC<JournalTabsProps> = ({
   // We exclude 'cover' from the protruding side tabs of open book spreads, or we show it as a special bookmark tab
   const tabs = PAGE_MAP.filter((p) => p.id !== 'cover');
 
-  const rotations = ['-rotate-1', 'rotate-2', '-rotate-2', 'rotate-1', '-rotate-1'];
+  const rotations = ['-rotate-2', 'rotate-1', '-rotate-1', 'rotate-2', '-rotate-2', 'rotate-1', '-rotate-1'];
 
   return (
-    <div className="absolute top-12 sm:top-16 -right-12 sm:-right-14 flex flex-col gap-5 sm:gap-6 z-20">
+    <nav
+      aria-label="Journal sticky-note tabs"
+      className="absolute top-10 sm:top-14 -right-7 sm:-right-8 flex flex-col gap-3 sm:gap-4 z-20"
+    >
       {tabs.map((tab, idx) => {
         const isActive = currentPage === tab.id;
         const rot = rotations[idx % rotations.length];
@@ -30,14 +33,16 @@ export const JournalTabs: React.FC<JournalTabsProps> = ({
               onNavigate(tab.id);
             }}
             title={`${tab.title} (${tab.spreadLabel})`}
-            className={`${tab.tabColor} px-2 sm:px-2.5 py-4 sm:py-5 rounded-r-md shadow-tactile border border-l-0 border-[#d2c3c4]/70 hover:translate-x-3 transition-all duration-300 group flex items-center justify-center relative ${rot} origin-left cursor-pointer ${
+            className={`sticky-note-tab sticky-note-attached ${tab.tabColor} px-2.5 sm:px-3 py-3.5 sm:py-4.5 rounded-r-sm shadow-tactile border border-l-0 border-[#b97891]/45 hover:translate-x-3 transition-all duration-300 group flex items-center justify-center relative ${rot} origin-left cursor-pointer ${
               isActive
-                ? 'translate-x-3 ring-2 ring-[#70585b]/40 shadow-lifted z-30'
+                ? 'translate-x-4 ring-2 ring-[#805365]/35 shadow-lifted z-30'
                 : 'opacity-90 hover:opacity-100'
             }`}
           >
+            <span className="absolute left-1.5 right-1.5 top-1.5 border-t border-dashed border-[#805365]/25 pointer-events-none" />
+            <span className="sticky-note-fold absolute top-0 right-0 w-3 h-3 pointer-events-none" />
             <span
-              className={`font-accent-handwritten text-sm sm:text-base ${tab.tabTextColor} whitespace-nowrap journal-tab group-hover:scale-105 transition-transform tracking-wide select-none font-medium`}
+              className={`sticky-note-label font-accent-handwritten text-[13px] sm:text-sm ${tab.tabTextColor} whitespace-nowrap journal-tab group-hover:scale-105 transition-transform tracking-wide select-none font-bold leading-none`}
             >
               {tab.title.replace(' & ', ' / ')}
             </span>
@@ -47,6 +52,6 @@ export const JournalTabs: React.FC<JournalTabsProps> = ({
           </button>
         );
       })}
-    </div>
+    </nav>
   );
 };
