@@ -1,6 +1,4 @@
 {
-  "name": "The Keeper's Journal",
-  "description": "Personal portfolio and handcrafted interactive junk journal of Ishana Datta, B.Tech E&TC engineering student at Cummins College, Pune, featuring algorithms, competitive programming, and creative web builds.",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "name": "Ishana Datta Portfolio",
+  "description": "Handcrafted interactive scrapbook and engineering journal of Ishana Datta, B.Tech E&TC engineering student at Cummins College, Pune, featuring algorithms, competitive programming, and creative web builds."
 }

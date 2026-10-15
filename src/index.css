@@ -15,6 +15,12 @@
     --color-scrapbook-border: #d8b5bd;
   }
 
+  html {
+    scroll-behavior: smooth;
+    scrollbar-color: #b97891 #f8d7e2;
+    scrollbar-width: thin;
+  }
+
   body {
     background-color: #fff8f0;
     color: #44343b;
