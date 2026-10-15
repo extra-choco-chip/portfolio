@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { PageId, ScrapItem, GuestbookEntry } from './types';
 import { Project } from './data/portfolioData';
 import { TopNav } from './components/TopNav';
@@ -47,10 +48,42 @@ export default function App() {
 
   // Add Memory Modal state
   const [isAddMemoryOpen, setIsAddMemoryOpen] = useState(false);
-  const [userScraps, setUserScraps] = useState<ScrapItem[]>([]);
 
-  // Genuine visitor guestbook entries (starts empty per user instructions)
-  const [guestbookEntries, setGuestbookEntries] = useState<GuestbookEntry[]>([]);
+  // User scraps with LocalStorage persistence
+  const [userScraps, setUserScraps] = useState<ScrapItem[]>(() => {
+    try {
+      const saved = localStorage.getItem('ishana_journal_scraps');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  // Genuine visitor guestbook entries with LocalStorage persistence
+  const [guestbookEntries, setGuestbookEntries] = useState<GuestbookEntry[]>(() => {
+    try {
+      const saved = localStorage.getItem('ishana_journal_guestbook');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('ishana_journal_scraps', JSON.stringify(userScraps));
+    } catch {
+      // storage unavailable
+    }
+  }, [userScraps]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('ishana_journal_guestbook', JSON.stringify(guestbookEntries));
+    } catch {
+      // storage unavailable
+    }
+  }, [guestbookEntries]);
 
   // Page Flip Navigation Handler
   const handleNavigate = (targetPage: PageId) => {
@@ -62,6 +95,7 @@ export default function App() {
     if (targetPage === currentPage) return;
     setIsFlipping(true);
     playPageFlipSound();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 
     setTimeout(() => {
       setCurrentPage(targetPage);
@@ -136,6 +170,14 @@ export default function App() {
         candlelightMode ? 'bg-[#f4ebd8]' : 'bg-[#fff8f0]'
       }`}
     >
+      {/* Skip to Main Content Link for Accessibility */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 z-50 bg-[#805365] text-white px-4 py-2 rounded-sm shadow-md font-label-sm border border-[#F2BFCF]"
+      >
+        Skip to main content
+      </a>
+
       {/* Candlelight Ambient Glow Overlay */}
       {candlelightMode && (
         <div className="fixed inset-0 pointer-events-none bg-gradient-to-t from-amber-600/10 via-amber-400/5 to-transparent z-30 mix-blend-multiply" />
@@ -204,57 +246,64 @@ export default function App() {
           </div>
         )}
 
-        {/* Page Container with 3D Flip Transition */}
-        <div
-          className={`w-full flex items-center justify-center transition-all duration-300 transform ${
-            isFlipping ? 'opacity-30 scale-98 rotate-y-6' : 'opacity-100 scale-100 rotate-y-0'
-          }`}
-        >
-          {currentPage === 'cover' && (
-            <CoverScreen
-              onOpen={() => handleNavigate('about')}
-              onNavigate={handleNavigate}
-              onOpenPageMap={() => setIsPageMapOpen(true)}
-            />
-          )}
+        {/* Page Container with Smooth Framer Motion Transition */}
+        <div id="main-content" className="w-full flex items-center justify-center">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentPage}
+              initial={{ opacity: 0, y: 16, scale: 0.985 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -16, scale: 0.985 }}
+              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+              className="w-full flex items-center justify-center"
+            >
+              {currentPage === 'cover' && (
+                <CoverScreen
+                  onOpen={() => handleNavigate('about')}
+                  onNavigate={handleNavigate}
+                  onOpenPageMap={() => setIsPageMapOpen(true)}
+                />
+              )}
 
-          {currentPage === 'about' && (
-            <AboutScreen
-              onNavigate={handleNavigate}
-              onOpenLightbox={handleOpenLightbox}
-            />
-          )}
+              {currentPage === 'about' && (
+                <AboutScreen
+                  onNavigate={handleNavigate}
+                  onOpenLightbox={handleOpenLightbox}
+                />
+              )}
 
-          {currentPage === 'projects' && (
-            <ProjectsScreen
-              onNavigate={handleNavigate}
-              onOpenProjectDetail={(project) => setSelectedProject(project)}
-            />
-          )}
+              {currentPage === 'projects' && (
+                <ProjectsScreen
+                  onNavigate={handleNavigate}
+                  onOpenProjectDetail={(project) => setSelectedProject(project)}
+                />
+              )}
 
-          {currentPage === 'coding' && (
-            <CodingScreen onNavigate={handleNavigate} />
-          )}
+              {currentPage === 'coding' && (
+                <CodingScreen onNavigate={handleNavigate} />
+              )}
 
-          {currentPage === 'achievements' && (
-            <AchievementsScreen onNavigate={handleNavigate} />
-          )}
+              {currentPage === 'achievements' && (
+                <AchievementsScreen onNavigate={handleNavigate} />
+              )}
 
-          {currentPage === 'experiments' && (
-            <ExperimentsScreen onNavigate={handleNavigate} />
-          )}
+              {currentPage === 'experiments' && (
+                <ExperimentsScreen onNavigate={handleNavigate} />
+              )}
 
-          {currentPage === 'journey' && (
-            <JourneyScreen onNavigate={handleNavigate} />
-          )}
+              {currentPage === 'journey' && (
+                <JourneyScreen onNavigate={handleNavigate} />
+              )}
 
-          {currentPage === 'contact' && (
-            <ContactScreen
-              onNavigate={handleNavigate}
-              entries={guestbookEntries}
-              onAddEntry={handleAddGuestbookEntry}
-            />
-          )}
+              {currentPage === 'contact' && (
+                <ContactScreen
+                  onNavigate={handleNavigate}
+                  entries={guestbookEntries}
+                  onAddEntry={handleAddGuestbookEntry}
+                />
+              )}
+            </motion.div>
+          </AnimatePresence>
         </div>
 
         {/* Spread Navigation Bar (Prev / Next & Page Map) */}
