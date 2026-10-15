@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion } from 'motion/react';
 import { playTactileClick } from '../utils/audio';
 
 interface PolaroidPortraitFrameProps {
@@ -34,7 +35,13 @@ export const PolaroidPortraitFrame: React.FC<PolaroidPortraitFrameProps> = ({ on
   };
 
   return (
-    <div className="relative z-10 w-full max-w-xs sm:max-w-sm mx-auto mt-4 rotate-[-2.5deg] hover:rotate-[-0.5deg] transition-transform duration-500">
+    <motion.div
+      initial={{ opacity: 0, scale: 0.9, y: 15 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      whileHover={{ rotate: 0, scale: 1.03 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 22 }}
+      className="relative z-10 w-full max-w-xs sm:max-w-sm mx-auto mt-4 rotate-[-2.5deg]"
+    >
       {/* Top Floral Washi Tape */}
       <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 w-32 h-6 bg-[#F8D7E2] rotate-[3deg] z-20 shadow-xs flex items-center justify-center washi-tape-strip border-y border-[#B97891]/50">
         <span className="material-symbols-outlined text-[#805365]/70 text-sm rotate-[-10deg]">
@@ -43,7 +50,7 @@ export const PolaroidPortraitFrame: React.FC<PolaroidPortraitFrameProps> = ({ on
       </div>
 
       {/* Main Polaroid Frame with intentional outlines */}
-      <div className="bg-[#FFFEFC] p-4 pb-8 shadow-tactile-heavy border border-[#D8B5BD] hover:border-[#B97891] transition-colors">
+      <div className="bg-[#FFFEFC] p-4 pb-7 shadow-tactile-heavy border border-[#D8B5BD] hover:border-[#B97891] transition-colors">
         {/* Photo Container Area */}
         <div className="w-full aspect-square bg-[#FFF8F0] border border-dashed border-[#B97891]/60 rounded-xs overflow-hidden relative flex flex-col items-center justify-center p-4 group">
           {customPhotoUrl ? (
@@ -58,28 +65,38 @@ export const PolaroidPortraitFrame: React.FC<PolaroidPortraitFrameProps> = ({ on
                   playTactileClick();
                   setCustomPhotoUrl(null);
                 }}
-                className="absolute top-2 right-2 bg-[#44343B]/80 text-white rounded-full p-1 text-xs hover:bg-[#805365]"
+                className="absolute top-2 right-2 bg-[#44343B]/80 text-white rounded-full p-1 text-xs hover:bg-[#805365] cursor-pointer"
                 title="Remove photo"
               >
                 <span className="material-symbols-outlined text-sm">close</span>
               </button>
             </div>
           ) : (
-            <div className="text-center flex flex-col items-center justify-center space-y-3">
-              {/* Monogram Seal Artwork */}
-              <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-[#F8D7E2] via-[#F2BFCF] to-[#ED9BB8] border-2 border-[#B97891] flex items-center justify-center shadow-xs">
-                <span className="font-display-lg text-2xl font-bold text-[#805365] tracking-wider">
-                  ID
-                </span>
+            <div className="text-center flex flex-col items-center justify-center space-y-2.5">
+              {/* Botanical Illustrated Emblem Portrait */}
+              <div className="relative">
+                <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-[#F8D7E2] via-[#F2BFCF] to-[#ED9BB8] border-2 border-[#B97891] flex items-center justify-center shadow-xs">
+                  <div className="flex flex-col items-center">
+                    <span className="font-display-lg text-2xl font-bold text-[#805365] tracking-wider">
+                      ID
+                    </span>
+                    <span className="text-[9px] font-accent-handwritten text-[#805365]/80 -mt-0.5">
+                      at the atelier
+                    </span>
+                  </div>
+                </div>
+                <div className="absolute -bottom-1 -right-1 bg-[#FFF8F0] rounded-full p-1 shadow-2xs border border-[#D8B5BD]">
+                  <span className="material-symbols-outlined text-sm text-[#805365]">psychology</span>
+                </div>
               </div>
 
-              {/* Clear, intentional placeholder label */}
+              {/* Title & Status */}
               <div>
                 <p className="font-accent-handwritten text-xl text-[#805365] leading-tight">
-                  A little portrait goes here
+                  Ishana Datta
                 </p>
-                <span className="font-label-sm text-[10px] text-[#805365]/70 tracking-widest uppercase block mt-1">
-                  Ready for Ishana's photograph
+                <span className="font-label-sm text-[10px] text-[#805365]/80 tracking-widest uppercase block mt-0.5">
+                  E&TC Engineer · Problem Solver
                 </span>
               </div>
 
@@ -89,10 +106,10 @@ export const PolaroidPortraitFrame: React.FC<PolaroidPortraitFrameProps> = ({ on
                   playTactileClick();
                   setIsEditing(!isEditing);
                 }}
-                className="px-3 py-1 bg-[#F8D7E2] hover:bg-[#F2BFCF] text-[#805365] text-xs font-label-sm rounded-sm border border-[#D8B5BD] shadow-2xs hover:shadow-xs transition-all flex items-center gap-1.5 cursor-pointer"
+                className="px-3 py-1 bg-[#F8D7E2] hover:bg-[#F2BFCF] text-[#805365] text-xs font-label-sm rounded-sm border border-[#D8B5BD] shadow-2xs hover:shadow-xs transition-all flex items-center gap-1.5 cursor-pointer font-semibold"
               >
                 <span className="material-symbols-outlined text-sm">add_photo_alternate</span>
-                <span>Add Your Photo</span>
+                <span>Upload Custom Photo</span>
               </button>
             </div>
           )}
@@ -100,9 +117,9 @@ export const PolaroidPortraitFrame: React.FC<PolaroidPortraitFrameProps> = ({ on
           {/* Quick upload popover if toggled */}
           {isEditing && (
             <div className="absolute inset-0 bg-[#FFF8F0]/95 backdrop-blur-xs p-4 flex flex-col justify-center items-center text-center z-30 animate-fade-in border border-[#B97891]">
-              <h4 className="font-display-lg text-base text-[#805365] mb-2">Upload Portrait</h4>
-              <label className="w-full mb-2 cursor-pointer bg-[#F8D7E2] text-[#805365] py-1.5 px-3 rounded-xs text-xs font-label-sm border border-[#D8B5BD] hover:bg-[#F2BFCF]">
-                <span>Choose Local File</span>
+              <h4 className="font-display-lg text-base text-[#805365] mb-2 font-bold">Upload Portrait</h4>
+              <label className="w-full mb-2 cursor-pointer bg-[#F8D7E2] text-[#805365] py-1.5 px-3 rounded-xs text-xs font-label-sm border border-[#D8B5BD] hover:bg-[#F2BFCF] font-semibold">
+                <span>Choose Local Image File</span>
                 <input
                   type="file"
                   accept="image/*"
@@ -124,14 +141,14 @@ export const PolaroidPortraitFrame: React.FC<PolaroidPortraitFrameProps> = ({ on
                 <div className="flex gap-2">
                   <button
                     type="submit"
-                    className="flex-1 bg-[#805365] text-white py-1 rounded-xs text-xs font-label-sm"
+                    className="flex-1 bg-[#805365] text-white py-1 rounded-xs text-xs font-label-sm cursor-pointer"
                   >
                     Set Photo
                   </button>
                   <button
                     type="button"
                     onClick={() => setIsEditing(false)}
-                    className="px-2 bg-gray-200 text-gray-700 py-1 rounded-xs text-xs font-label-sm"
+                    className="px-2 bg-gray-200 text-gray-700 py-1 rounded-xs text-xs font-label-sm cursor-pointer"
                   >
                     Cancel
                   </button>
@@ -151,6 +168,6 @@ export const PolaroidPortraitFrame: React.FC<PolaroidPortraitFrameProps> = ({ on
           </span>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
