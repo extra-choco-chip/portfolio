@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { PageId, GuestbookEntry } from '../types';
 import { JournalTabs } from './JournalTabs';
 import { ISHANA_PROFILE } from '../data/portfolioData';
+import { ASSET_IMAGES } from '../assets/images';
 import { playStampSound, playTactileClick } from '../utils/audio';
 
 interface ContactScreenProps {
@@ -22,6 +24,7 @@ export const ContactScreen: React.FC<ContactScreenProps> = ({
   const [stampType, setStampType] = useState<'lavender' | 'butterfly' | 'rose'>('lavender');
   const [submitted, setSubmitted] = useState(false);
   const [copiedEmail, setCopiedEmail] = useState(false);
+  const [formError, setFormError] = useState('');
 
   const subjects = [
     'Collaboration / Project Inquiry',
@@ -39,12 +42,20 @@ export const ContactScreen: React.FC<ContactScreenProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim() || !message.trim()) return;
+    if (!name.trim()) {
+      setFormError('Please provide your name or handle.');
+      return;
+    }
+    if (!message.trim()) {
+      setFormError('Please write a short note or message.');
+      return;
+    }
 
+    setFormError('');
     playStampSound();
     onAddEntry({
       name: name.trim(),
-      location: affiliation.trim() || 'Visitor',
+      location: affiliation.trim() || 'Fellow Explorer',
       topic: subject,
       message: message.trim(),
       stampType,
@@ -89,185 +100,232 @@ export const ContactScreen: React.FC<ContactScreenProps> = ({
             </p>
           </div>
 
-          {/* Verified Contact Card */}
+          {/* Verified Contact Card with Vintage Envelope Image */}
           <div className="p-3.5 bg-[#FFFEFC] rounded-xs border border-[#D8B5BD] shadow-2xs mb-4 rotate-[-0.5deg]">
             <div className="flex items-center justify-between mb-2">
               <span className="font-label-sm text-[10px] text-[#805365] uppercase tracking-wider font-bold">
                 Direct Contact Card:
               </span>
-              <button
-                onClick={handleCopyEmail}
-                className="text-[10px] font-label-sm bg-[#F8D7E2] hover:bg-[#F2BFCF] text-[#805365] px-2 py-0.5 rounded-xs border border-[#D8B5BD] transition-colors cursor-pointer flex items-center gap-1 font-semibold"
-              >
-                <span>{copiedEmail ? 'Copied ✓' : 'Copy Email'}</span>
-                <span className="material-symbols-outlined text-[11px]">content_copy</span>
-              </button>
+              <div className="flex gap-1.5">
+                <a
+                  href={`mailto:${ISHANA_PROFILE.email}?subject=Hello%20Ishana`}
+                  className="text-[10px] font-label-sm bg-[#F5EBCB] hover:bg-[#F8D7E2] text-[#44343B] px-2 py-0.5 rounded-xs border border-[#D8B5BD] transition-colors cursor-pointer flex items-center gap-1 font-semibold"
+                  title="Compose directly in your email app"
+                >
+                  <span>Open Mail App</span>
+                  <span className="material-symbols-outlined text-[11px]">send</span>
+                </a>
+                <button
+                  onClick={handleCopyEmail}
+                  className="text-[10px] font-label-sm bg-[#F8D7E2] hover:bg-[#F2BFCF] text-[#805365] px-2 py-0.5 rounded-xs border border-[#D8B5BD] transition-colors cursor-pointer flex items-center gap-1 font-semibold"
+                >
+                  <span>{copiedEmail ? 'Copied ✓' : 'Copy Email'}</span>
+                  <span className="material-symbols-outlined text-[11px]">content_copy</span>
+                </button>
+              </div>
             </div>
 
-            <div className="space-y-1 text-xs font-body-md text-[#44343B]">
-              <p className="flex items-center gap-2">
-                <span className="text-[#805365] font-bold">Email:</span>
-                <a
-                  href={`mailto:${ISHANA_PROFILE.email}`}
-                  className="text-[#805365] hover:underline font-mono"
-                >
-                  {ISHANA_PROFILE.email}
-                </a>
-              </p>
-              <p className="flex items-center gap-2">
-                <span className="text-[#805365] font-bold">College:</span>
-                <span>{ISHANA_PROFILE.college}</span>
-              </p>
-              <p className="flex items-center gap-2">
-                <span className="text-[#805365] font-bold">Degree:</span>
-                <span>{ISHANA_PROFILE.degree}</span>
-              </p>
+            <div className="flex items-center gap-3">
+              <div className="w-14 h-14 rounded-xs overflow-hidden border border-[#D8B5BD] bg-[#FFF8F0] shrink-0 shadow-2xs">
+                <img
+                  src={ASSET_IMAGES.vintageEnvelope}
+                  alt="Vintage Postal Envelope"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="space-y-0.5 text-xs font-body-md text-[#44343B] flex-1">
+                <p className="flex items-center gap-1.5">
+                  <span className="text-[#805365] font-bold">Email:</span>
+                  <a
+                    href={`mailto:${ISHANA_PROFILE.email}`}
+                    className="text-[#805365] hover:underline font-mono text-[11px]"
+                  >
+                    {ISHANA_PROFILE.email}
+                  </a>
+                </p>
+                <p className="flex items-center gap-1.5 text-[11px]">
+                  <span className="text-[#805365] font-bold">College:</span>
+                  <span>MKSSS Cummins College of Engg, Pune</span>
+                </p>
+                <p className="flex items-center gap-1.5 text-[11px]">
+                  <span className="text-[#805365] font-bold">Degree:</span>
+                  <span>B.Tech in E&TC Engineering</span>
+                </p>
+              </div>
             </div>
           </div>
 
           {/* Correspondence Form */}
-          {submitted ? (
-            <div className="bg-[#F8D7E2]/60 p-6 rounded-xs border-2 border-[#B97891] text-center my-8 animate-fade-in shadow-tactile">
-              <span className="material-symbols-outlined text-4xl text-[#805365] mb-2">
-                mark_email_read
-              </span>
-              <h3 className="font-display-lg text-2xl text-[#805365] font-bold">
-                Note Sealed & Pressed!
-              </h3>
-              <p className="font-accent-handwritten text-lg text-[#44343B] mt-1.5">
-                Your entry has been pinned to the Guestbook Ledger on the right spread with a wax seal.
-              </p>
-            </div>
-          ) : (
-            <form onSubmit={handleSubmit} className="space-y-3 relative z-10">
-              {/* Subject */}
-              <div>
-                <label className="block text-[11px] font-label-sm uppercase tracking-wider text-[#805365] font-bold mb-0.5">
-                  Subject / Topic:
-                </label>
-                <select
-                  value={subject}
-                  onChange={(e) => setSubject(e.target.value)}
-                  className="w-full bg-[#FFFEFC] border border-[#D8B5BD] rounded-xs py-1 px-2 text-xs font-body-md text-[#44343B] focus:outline-hidden focus:border-[#805365]"
-                >
-                  {subjects.map((s) => (
-                    <option key={s} value={s}>
-                      {s}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Name & Affiliation in 2 columns */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                <div>
-                  <label className="block text-[11px] font-label-sm uppercase tracking-wider text-[#805365] font-bold mb-0.5">
-                    Your Name:
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="e.g. Fellow Student / Developer"
-                    className="w-full bg-[#FFFEFC] border border-[#D8B5BD] rounded-xs p-1.5 text-xs font-body-md text-[#44343B] focus:outline-hidden focus:border-[#805365]"
-                  />
-                </div>
-                <div>
-                  <label className="block text-[11px] font-label-sm uppercase tracking-wider text-[#805365] font-bold mb-0.5">
-                    College / Organization:
-                  </label>
-                  <input
-                    type="text"
-                    value={affiliation}
-                    onChange={(e) => setAffiliation(e.target.value)}
-                    placeholder="e.g. College / GitHub username"
-                    className="w-full bg-[#FFFEFC] border border-[#D8B5BD] rounded-xs p-1.5 text-xs font-body-md text-[#44343B] focus:outline-hidden focus:border-[#805365]"
-                  />
-                </div>
-              </div>
-
-              {/* Message */}
-              <div>
-                <label className="block text-[11px] font-label-sm uppercase tracking-wider text-[#805365] font-bold mb-0.5">
-                  Message / Ledger Note:
-                </label>
-                <textarea
-                  required
-                  rows={3}
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  placeholder="Leave a thought, ask an algorithmic question, or say hello..."
-                  className="w-full bg-[#FFFEFC] border border-[#D8B5BD] rounded-xs p-2 text-xs font-body-md text-[#44343B] focus:outline-hidden focus:border-[#805365] resize-none"
-                />
-              </div>
-
-              {/* Stamp Selection */}
-              <div>
-                <label className="block text-[11px] font-label-sm uppercase tracking-wider text-[#805365] font-bold mb-1">
-                  Pick a Decorative Stamp:
-                </label>
-                <div className="flex gap-2">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      playTactileClick();
-                      setStampType('lavender');
-                    }}
-                    className={`px-2.5 py-1 rounded-xs text-xs font-accent-handwritten text-sm border transition-all cursor-pointer flex items-center gap-1 ${
-                      stampType === 'lavender'
-                        ? 'bg-[#F2BFCF] text-[#805365] border-[#805365] font-bold'
-                        : 'bg-white text-[#44343B] border-[#D8B5BD]'
-                    }`}
-                  >
-                    <span>🪻 Wild Flora</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      playTactileClick();
-                      setStampType('butterfly');
-                    }}
-                    className={`px-2.5 py-1 rounded-xs text-xs font-accent-handwritten text-sm border transition-all cursor-pointer flex items-center gap-1 ${
-                      stampType === 'butterfly'
-                        ? 'bg-[#F5EBCB] text-[#44343B] border-[#805365] font-bold'
-                        : 'bg-white text-[#44343B] border-[#D8B5BD]'
-                    }`}
-                  >
-                    <span>🦋 Paper Moth</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      playTactileClick();
-                      setStampType('rose');
-                    }}
-                    className={`px-2.5 py-1 rounded-xs text-xs font-accent-handwritten text-sm border transition-all cursor-pointer flex items-center gap-1 ${
-                      stampType === 'rose'
-                        ? 'bg-[#F8D7E2] text-[#805365] border-[#805365] font-bold'
-                        : 'bg-white text-[#44343B] border-[#D8B5BD]'
-                    }`}
-                  >
-                    <span>🌹 Rose Petal</span>
-                  </button>
-                </div>
-              </div>
-
-              {/* Submit */}
-              <button
-                type="submit"
-                className="w-full py-2.5 bg-[#805365] hover:bg-[#683f50] text-white rounded-xs font-label-sm text-xs tracking-wider uppercase shadow-tactile transition-transform hover:-translate-y-0.5 cursor-pointer flex items-center justify-center gap-1.5"
+          <AnimatePresence mode="wait">
+            {submitted ? (
+              <motion.div
+                key="submitted"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0 }}
+                className="bg-[#F8D7E2]/70 p-6 rounded-xs border-2 border-[#B97891] text-center my-6 shadow-tactile"
               >
-                <span className="material-symbols-outlined text-base">approval</span>
-                <span>Affix Stamp & Pin to Guestbook</span>
-              </button>
-            </form>
-          )}
+                <span className="material-symbols-outlined text-4xl text-[#805365] mb-2">
+                  mark_email_read
+                </span>
+                <h3 className="font-display-lg text-2xl text-[#805365] font-bold">
+                  Note Sealed & Pressed!
+                </h3>
+                <p className="font-accent-handwritten text-lg text-[#44343B] mt-1.5">
+                  Your entry has been pinned to the Guestbook Ledger on the right spread with your selected wax seal.
+                </p>
+              </motion.div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-2.5 relative z-10">
+                {formError && (
+                  <div className="p-2 bg-[#F2BFCF] text-[#805365] text-xs font-label-sm rounded-xs border border-[#805365] font-semibold">
+                    ⚠ {formError}
+                  </div>
+                )}
+
+                {/* Subject */}
+                <div>
+                  <label className="block text-[11px] font-label-sm uppercase tracking-wider text-[#805365] font-bold mb-0.5">
+                    Subject / Topic:
+                  </label>
+                  <select
+                    value={subject}
+                    onChange={(e) => setSubject(e.target.value)}
+                    className="w-full bg-[#FFFEFC] border border-[#D8B5BD] rounded-xs py-1 px-2 text-xs font-body-md text-[#44343B] focus:outline-hidden focus:border-[#805365]"
+                  >
+                    {subjects.map((s) => (
+                      <option key={s} value={s}>
+                        {s}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Name & Affiliation in 2 columns */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <div>
+                    <label className="block text-[11px] font-label-sm uppercase tracking-wider text-[#805365] font-bold mb-0.5">
+                      Your Name:
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={name}
+                      onChange={(e) => {
+                        setName(e.target.value);
+                        if (formError) setFormError('');
+                      }}
+                      placeholder="e.g. Fellow Student / Recruiter"
+                      className="w-full bg-[#FFFEFC] border border-[#D8B5BD] rounded-xs p-1.5 text-xs font-body-md text-[#44343B] focus:outline-hidden focus:border-[#805365]"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-label-sm uppercase tracking-wider text-[#805365] font-bold mb-0.5">
+                      College / Organization:
+                    </label>
+                    <input
+                      type="text"
+                      value={affiliation}
+                      onChange={(e) => setAffiliation(e.target.value)}
+                      placeholder="e.g. Cummins / GitHub handle"
+                      className="w-full bg-[#FFFEFC] border border-[#D8B5BD] rounded-xs p-1.5 text-xs font-body-md text-[#44343B] focus:outline-hidden focus:border-[#805365]"
+                    />
+                  </div>
+                </div>
+
+                {/* Message */}
+                <div>
+                  <div className="flex justify-between items-center mb-0.5">
+                    <label className="text-[11px] font-label-sm uppercase tracking-wider text-[#805365] font-bold">
+                      Message / Ledger Note:
+                    </label>
+                    <span className="text-[10px] font-mono text-[#805365]/70">
+                      {message.length}/300
+                    </span>
+                  </div>
+                  <textarea
+                    required
+                    maxLength={300}
+                    rows={3}
+                    value={message}
+                    onChange={(e) => {
+                      setMessage(e.target.value);
+                      if (formError) setFormError('');
+                    }}
+                    placeholder="Leave a thought, discuss competitive programming, or say hello..."
+                    className="w-full bg-[#FFFEFC] border border-[#D8B5BD] rounded-xs p-2 text-xs font-body-md text-[#44343B] focus:outline-hidden focus:border-[#805365] resize-none"
+                  />
+                </div>
+
+                {/* Stamp Selection */}
+                <div>
+                  <label className="block text-[11px] font-label-sm uppercase tracking-wider text-[#805365] font-bold mb-1">
+                    Pick a Decorative Stamp:
+                  </label>
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        playTactileClick();
+                        setStampType('lavender');
+                      }}
+                      className={`px-2.5 py-1 rounded-xs text-xs font-accent-handwritten text-sm border transition-all cursor-pointer flex items-center gap-1 ${
+                        stampType === 'lavender'
+                          ? 'bg-[#F2BFCF] text-[#805365] border-[#805365] font-bold shadow-xs'
+                          : 'bg-white text-[#44343B] border-[#D8B5BD]'
+                      }`}
+                    >
+                      <span>🪻 Wild Flora</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        playTactileClick();
+                        setStampType('butterfly');
+                      }}
+                      className={`px-2.5 py-1 rounded-xs text-xs font-accent-handwritten text-sm border transition-all cursor-pointer flex items-center gap-1 ${
+                        stampType === 'butterfly'
+                          ? 'bg-[#F5EBCB] text-[#44343B] border-[#805365] font-bold shadow-xs'
+                          : 'bg-white text-[#44343B] border-[#D8B5BD]'
+                      }`}
+                    >
+                      <span>🦋 Paper Moth</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        playTactileClick();
+                        setStampType('rose');
+                      }}
+                      className={`px-2.5 py-1 rounded-xs text-xs font-accent-handwritten text-sm border transition-all cursor-pointer flex items-center gap-1 ${
+                        stampType === 'rose'
+                          ? 'bg-[#F8D7E2] text-[#805365] border-[#805365] font-bold shadow-xs'
+                          : 'bg-white text-[#44343B] border-[#D8B5BD]'
+                      }`}
+                    >
+                      <span>🌹 Rose Petal</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Submit */}
+                <motion.button
+                  whileHover={{ scale: 1.01, y: -1 }}
+                  whileTap={{ scale: 0.98 }}
+                  type="submit"
+                  className="w-full py-2.5 bg-[#805365] hover:bg-[#683f50] text-white rounded-xs font-label-sm text-xs tracking-wider uppercase shadow-tactile cursor-pointer flex items-center justify-center gap-1.5 font-bold"
+                >
+                  <span className="material-symbols-outlined text-base">approval</span>
+                  <span>Affix Stamp & Pin to Guestbook</span>
+                </motion.button>
+              </form>
+            )}
+          </AnimatePresence>
         </div>
 
         {/* Footer */}
         <div className="pt-3 border-t border-[#D8B5BD] flex items-center justify-between text-xs font-label-sm text-[#805365]">
-          <span>Response via email within 48 hours</span>
+          <span>Direct response within 48 hours</span>
           <span className="font-accent-handwritten text-sm text-[#B97891]">
             dattaishana@gmail.com
           </span>
@@ -292,10 +350,14 @@ export const ContactScreen: React.FC<ContactScreenProps> = ({
             </span>
           </div>
 
-          {/* Genuine Empty State or Real Entries List */}
+          {/* Genuine Empty State or Real Entries List with Framer Motion */}
           {entries.length === 0 ? (
-            <div className="p-8 bg-[#FFFEFC] rounded-xs border-2 border-dashed border-[#D8B5BD] text-center my-10 relative rotate-[-0.5deg]">
-              <div className="w-16 h-16 rounded-full bg-[#F8D7E2] mx-auto flex items-center justify-center text-[#805365] mb-3">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="p-8 bg-[#FFFEFC] rounded-xs border-2 border-dashed border-[#D8B5BD] text-center my-10 relative rotate-[-0.5deg]"
+            >
+              <div className="w-16 h-16 rounded-full bg-[#F8D7E2] mx-auto flex items-center justify-center text-[#805365] mb-3 shadow-xs">
                 <span className="material-symbols-outlined text-3xl">rate_review</span>
               </div>
               <h4 className="font-display-lg text-xl text-[#805365] font-bold mb-1">
@@ -307,43 +369,49 @@ export const ContactScreen: React.FC<ContactScreenProps> = ({
               <span className="font-accent-handwritten text-base text-[#B97891]">
                 ✎ Be the very first person to leave your mark.
               </span>
-            </div>
+            </motion.div>
           ) : (
             <div className="space-y-3.5 max-h-[510px] overflow-y-auto pr-2">
-              {entries.map((entry, idx) => (
-                <div
-                  key={entry.id}
-                  className={`p-4 bg-[#FFFEFC] rounded-xs border border-[#D8B5BD] shadow-2xs relative transition-transform hover:scale-101 ${
-                    idx % 2 === 0 ? 'rotate-[-0.5deg]' : 'rotate-[0.5deg]'
-                  }`}
-                >
-                  {/* Decorative Washi Tape strip */}
-                  <div className="w-12 h-3.5 bg-[#F2BFCF] absolute -top-1.5 left-6 washi-tape-strip shadow-2xs border border-[#B97891]/40" />
+              <AnimatePresence mode="popLayout">
+                {entries.map((entry, idx) => (
+                  <motion.div
+                    key={entry.id}
+                    layout
+                    initial={{ opacity: 0, scale: 0.9, y: 15 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className={`p-4 bg-[#FFFEFC] rounded-xs border border-[#D8B5BD] shadow-2xs relative transition-transform hover:scale-101 ${
+                      idx % 2 === 0 ? 'rotate-[-0.5deg]' : 'rotate-[0.5deg]'
+                    }`}
+                  >
+                    {/* Decorative Washi Tape strip */}
+                    <div className="w-12 h-3.5 bg-[#F2BFCF] absolute -top-1.5 left-6 washi-tape-strip shadow-2xs border border-[#B97891]/40" />
 
-                  <div className="flex justify-between items-start mb-1 pt-1">
-                    <div>
-                      <h4 className="font-display-lg text-base text-[#44343B] font-bold">
-                        {entry.name}
-                      </h4>
-                      <span className="text-[11px] font-accent-handwritten text-[#B97891]">
-                        {entry.location} · {entry.date}
-                      </span>
-                      {entry.topic && (
-                        <span className="block text-[10px] font-label-sm text-[#805365] uppercase font-bold mt-0.5">
-                          {entry.topic}
+                    <div className="flex justify-between items-start mb-1 pt-1">
+                      <div>
+                        <h4 className="font-display-lg text-base text-[#44343B] font-bold">
+                          {entry.name}
+                        </h4>
+                        <span className="text-[11px] font-accent-handwritten text-[#B97891]">
+                          {entry.location} · {entry.date}
                         </span>
-                      )}
+                        {entry.topic && (
+                          <span className="block text-[10px] font-label-sm text-[#805365] uppercase font-bold mt-0.5">
+                            {entry.topic}
+                          </span>
+                        )}
+                      </div>
+                      <span className="text-xs bg-[#FFF8F0] px-2 py-0.5 rounded-xs border border-[#D8B5BD]">
+                        {entry.stampType === 'lavender' ? '🪻' : entry.stampType === 'butterfly' ? '🦋' : '🌹'}
+                      </span>
                     </div>
-                    <span className="text-xs bg-[#FFF8F0] px-2 py-0.5 rounded-xs border border-[#D8B5BD]">
-                      {entry.stampType === 'lavender' ? '🪻' : entry.stampType === 'butterfly' ? '🦋' : '🌹'}
-                    </span>
-                  </div>
 
-                  <p className="font-body-md text-xs sm:text-sm text-[#44343B] leading-relaxed italic mt-1">
-                    "{entry.message}"
-                  </p>
-                </div>
-              ))}
+                    <p className="font-body-md text-xs sm:text-sm text-[#44343B] leading-relaxed italic mt-1">
+                      "{entry.message}"
+                    </p>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
             </div>
           )}
         </div>
