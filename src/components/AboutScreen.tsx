@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { PageId } from '../types';
 import { JournalTabs } from './JournalTabs';
 import { PolaroidPortraitFrame } from './PolaroidPortraitFrame';
 import { ISHANA_PROFILE, CONVERSATION_STARTERS } from '../data/portfolioData';
+import { ASSET_IMAGES } from '../assets/images';
 import { playTactileClick } from '../utils/audio';
 
 interface AboutScreenProps {
@@ -37,16 +39,43 @@ export const AboutScreen: React.FC<AboutScreenProps> = ({ onNavigate, onOpenLigh
           cummins '27
         </div>
 
-        {/* Polaroid Frame for Ishana (No AI fake portrait; editable monogram placeholder) */}
+        {/* Polaroid Frame for Ishana */}
         <PolaroidPortraitFrame />
 
+        {/* Preserved Botanical Atelier Specimen Scrap (Asset Image Integration) */}
+        <motion.div
+          whileHover={{ scale: 1.05, rotate: -2 }}
+          onClick={() => {
+            onOpenLightbox(
+              ASSET_IMAGES.botanicalAtelier,
+              'Botanical Atelier & Study Corner',
+              'Preserved studio specimen: dried blooms, vintage ink pots, and algorithms notebook.'
+            );
+          }}
+          className="absolute top-[42%] left-3 sm:left-6 w-36 sm:w-44 p-2 bg-[#FFF8F0] shadow-tactile rotate-[-8deg] z-20 cursor-pointer border border-[#B97891] rounded-xs group"
+        >
+          <div className="w-full h-24 overflow-hidden rounded-xs border border-[#D8B5BD] bg-[#F8D7E2]/30 mb-1.5">
+            <img
+              src={ASSET_IMAGES.botanicalAtelier}
+              alt="Botanical Atelier"
+              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+            />
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="font-accent-handwritten text-xs text-[#805365] font-bold">
+              ✦ atelier specimen
+            </span>
+            <span className="text-[10px] font-label-sm text-[#B97891]">Inspect ↗</span>
+          </div>
+        </motion.div>
+
         {/* Pinned Vellum Note */}
-        <div
+        <motion.div
           onMouseEnter={() => setQuoteHovered(true)}
           onMouseLeave={() => setQuoteHovered(false)}
-          className={`absolute top-[62%] right-2 sm:right-6 md:right-8 w-44 sm:w-52 p-4 bg-[#FFFEFC]/95 backdrop-blur-md shadow-tactile torn-edge rotate-[10deg] z-20 transition-all duration-300 border border-[#B97891] ${
-            quoteHovered ? 'scale-108 rotate-[4deg] z-30' : ''
-          }`}
+          animate={quoteHovered ? { scale: 1.06, rotate: 4 } : { scale: 1, rotate: 10 }}
+          transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+          className="absolute top-[60%] right-2 sm:right-6 md:right-8 w-44 sm:w-52 p-4 bg-[#FFFEFC]/95 backdrop-blur-md shadow-tactile torn-edge z-20 border border-[#B97891]"
         >
           {/* Push Pin */}
           <div className="absolute top-2 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-[#ED9BB8] shadow-xs z-30 flex items-center justify-center border border-[#805365]">
@@ -55,7 +84,7 @@ export const AboutScreen: React.FC<AboutScreenProps> = ({ onNavigate, onOpenLigh
           <p className="font-accent-handwritten text-lg leading-snug mt-2 text-[#805365] italic">
             "Finding beauty in the unfinished edges, where code breaks, algorithms click, and paper frays."
           </p>
-        </div>
+        </motion.div>
 
         {/* Field Guide to Ishana (Specimen Card) */}
         <div className="absolute bottom-6 right-4 sm:right-8 w-48 sm:w-56 p-3.5 bg-[#FFF8F0] shadow-tactile rotate-[-6deg] z-10 border border-[#B97891] rounded-xs">
@@ -77,14 +106,15 @@ export const AboutScreen: React.FC<AboutScreenProps> = ({ onNavigate, onOpenLigh
       <section className="w-full md:w-1/2 min-h-[660px] md:min-h-[740px] p-6 sm:p-10 md:p-12 relative bg-[#FFF8F0] bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#FFFEFC] via-[#FFF8F0] to-[#F8D7E2]/30 rounded-r-sm overflow-hidden z-10 flex flex-col justify-between">
         <div>
           {/* Top Sticky Note */}
-          <div
+          <motion.div
+            whileHover={{ scale: 1.05, rotate: 0 }}
             onClick={playTactileClick}
-            className="absolute top-10 left-6 sm:left-10 px-4 py-2 bg-[#F8D7E2] shadow-tactile rotate-[-4deg] z-20 hover:rotate-0 hover:scale-105 transition-all duration-300 border border-[#B97891] rounded-xs cursor-pointer"
+            className="absolute top-10 left-6 sm:left-10 px-4 py-2 bg-[#F8D7E2] shadow-tactile rotate-[-4deg] z-20 border border-[#B97891] rounded-xs cursor-pointer"
           >
             <p className="font-accent-handwritten text-[#805365] text-xl font-bold leading-tight">
               Hello, Wanderer ✦
             </p>
-          </div>
+          </motion.div>
 
           {/* Doodled Flower Top Right */}
           <div className="absolute top-6 right-6 text-[#ED9BB8]/40 rotate-[15deg] pointer-events-none select-none">
@@ -103,11 +133,44 @@ export const AboutScreen: React.FC<AboutScreenProps> = ({ onNavigate, onOpenLigh
               <span className="font-medium text-[#805365]">MKSSS Cummins College of Engineering for Women, Pune</span>.
             </p>
             <p className="font-body-md text-sm sm:text-base text-[#44343B] leading-relaxed mb-3">
-              My engineering journey is driven by hands-on curiosity. I spend my days working through algorithmic puzzles, competing in ICPC-style programming contests (where I recently secured 2nd place in Algorithmia), and building projects that bridge rigorous data thinking with joyful frontend craft.
+              My engineering journey is driven by hands-on curiosity. I spend my days working through algorithmic puzzles, competing in ICPC-style programming contests (securing 2nd place in Algorithmia), and building projects that bridge rigorous data thinking with joyful frontend craft.
             </p>
             <p className="font-accent-handwritten text-lg text-[#805365] italic">
               — Welcome to my digital journal! Take your time exploring the pages.
             </p>
+
+            {/* Social Links & Resume Row */}
+            <div className="mt-4 pt-3 border-t border-dashed border-[#D8B5BD] flex flex-wrap items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <a
+                  href={ISHANA_PROFILE.socials.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-2.5 py-1 bg-[#F8D7E2] hover:bg-[#F2BFCF] text-[#805365] text-xs font-label-sm rounded-xs border border-[#D8B5BD] flex items-center gap-1 transition-colors"
+                >
+                  <span className="material-symbols-outlined text-sm">code</span>
+                  <span>GitHub</span>
+                </a>
+                <a
+                  href={ISHANA_PROFILE.socials.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-2.5 py-1 bg-[#F5EBCB] hover:bg-[#F8D7E2] text-[#44343B] text-xs font-label-sm rounded-xs border border-[#D8B5BD] flex items-center gap-1 transition-colors"
+                >
+                  <span className="material-symbols-outlined text-sm">hub</span>
+                  <span>LinkedIn</span>
+                </a>
+              </div>
+
+              {/* Download / Request Resume Wax-Seal Button */}
+              <a
+                href={`mailto:${ISHANA_PROFILE.email}?subject=Resume%20Request%20-%20Ishana%20Datta`}
+                className="px-3 py-1 bg-[#805365] hover:bg-[#683f50] text-white rounded-xs text-xs font-label-sm uppercase tracking-wider flex items-center gap-1.5 shadow-xs transition-transform hover:-translate-y-0.5"
+              >
+                <span className="material-symbols-outlined text-sm">description</span>
+                <span>Get Resume</span>
+              </a>
+            </div>
           </div>
 
           {/* Interactive Conversation Starters */}
@@ -129,7 +192,7 @@ export const AboutScreen: React.FC<AboutScreenProps> = ({ onNavigate, onOpenLigh
                   }}
                   className={`px-2.5 py-1.5 rounded-xs text-[11px] font-label-sm text-left transition-all cursor-pointer border ${
                     selectedStarter === idx
-                      ? 'bg-[#805365] text-white border-[#805365] font-semibold'
+                      ? 'bg-[#805365] text-white border-[#805365] font-semibold shadow-xs'
                       : 'bg-[#FFFEFC] text-[#44343B] border-[#D8B5BD] hover:bg-[#F2BFCF]'
                   }`}
                 >
@@ -138,12 +201,21 @@ export const AboutScreen: React.FC<AboutScreenProps> = ({ onNavigate, onOpenLigh
               ))}
             </div>
 
-            {selectedStarter !== null && (
-              <div className="p-3 bg-[#FFFEFC] rounded-xs border border-[#B97891] animate-fade-in text-xs font-accent-handwritten text-base text-[#44343B] leading-snug">
-                <span className="font-bold text-[#805365]">Ishana: </span>
-                {CONVERSATION_STARTERS[selectedStarter].answer}
-              </div>
-            )}
+            <AnimatePresence mode="wait">
+              {selectedStarter !== null && (
+                <motion.div
+                  key={selectedStarter}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.2 }}
+                  className="p-3 bg-[#FFFEFC] rounded-xs border border-[#B97891] text-xs font-accent-handwritten text-base text-[#44343B] leading-snug shadow-2xs"
+                >
+                  <span className="font-bold text-[#805365]">Ishana: </span>
+                  {CONVERSATION_STARTERS[selectedStarter].answer}
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </div>
 
