@@ -30,25 +30,57 @@
   }
 }
 
-/* Typography Utility Classes */
+/* Typography Utility Classes: Vintage Cursive & Bookplate Serifs */
 .font-display-lg {
-  font-family: "Libre Caslon Text", "Playfair Display", Georgia, serif;
+  font-family: "Cormorant Garamond", "Libre Caslon Text", Georgia, serif;
 }
 
 .font-headline-md {
-  font-family: "Libre Caslon Text", "Playfair Display", Georgia, serif;
+  font-family: "Cormorant Garamond", "Libre Caslon Text", Georgia, serif;
 }
 
 .font-body-md {
   font-family: "Source Serif 4", Georgia, serif;
 }
 
+/* Authentic Old Handwritten Cursive (Fountain pen / dipping pen style) */
 .font-accent-handwritten {
-  font-family: "Caveat", cursive, serif;
+  font-family: "Homemade Apple", "Caveat", cursive, serif;
+  letter-spacing: 0.01em;
+}
+
+/* Elegant Calligraphic Script with Victorian flourishes */
+.font-cursive-calligraphy {
+  font-family: "Alex Brush", "Homemade Apple", cursive, serif;
+}
+
+/* Classical Book Title Serif */
+.font-display-book {
+  font-family: "Cormorant Garamond", "Libre Caslon Text", Georgia, serif;
 }
 
 .font-label-sm {
   font-family: "Literata", Georgia, serif;
+}
+
+/* Vintage Gilded & Embossed Ink Effects */
+.gold-emboss {
+  background: linear-gradient(135deg, #e6c575 0%, #b89345 50%, #f4dda2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 1px 1px rgba(68, 52, 59, 0.4));
+}
+
+.rose-gold-foil {
+  background: linear-gradient(135deg, #f2bfcf 0%, #d48da8 50%, #f7d2df 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 1px 1px rgba(128, 83, 101, 0.3));
+}
+
+.ink-pressed {
+  color: #3b2830;
+  text-shadow: 0 0.5px 0.5px rgba(128, 83, 101, 0.25);
 }
 
 /* Scrapbook Outlines & Borders */
