@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { PageId } from '../types';
 import { JournalTabs } from './JournalTabs';
-import { ISHANA_PROFILE, DEBUGGING_STORIES } from '../data/portfolioData';
-import { playStampSound, playTactileClick } from '../utils/audio';
+import { DEBUGGING_STORIES } from '../data/portfolioData';
+import { playStampSound } from '../utils/audio';
 
 interface AchievementsScreenProps {
   onNavigate: (page: PageId) => void;
@@ -48,9 +49,11 @@ export const AchievementsScreen: React.FC<AchievementsScreenProps> = ({ onNaviga
           </div>
 
           {/* Confirmed Major Achievement Card: Algorithmia */}
-          <div
+          <motion.div
+            whileHover={{ scale: 1.015, rotate: 0 }}
+            whileTap={{ scale: 0.98 }}
             onClick={() => handleCardClick('algorithmia')}
-            className="p-5 bg-[#FFFEFC] border-2 border-[#B97891] rounded-xs shadow-tactile relative rotate-[-1deg] hover:rotate-0 transition-transform cursor-pointer group mb-5"
+            className="p-5 bg-[#FFFEFC] border-2 border-[#B97891] rounded-xs shadow-tactile relative rotate-[-1deg] transition-all cursor-pointer group mb-5"
           >
             {/* Top Ribbon Badge */}
             <div className="absolute -top-3.5 right-6 px-3 py-0.5 bg-[#F2BFCF] text-[#805365] font-label-sm text-[11px] font-bold uppercase tracking-wider rounded-xs border border-[#805365] shadow-xs">
@@ -75,26 +78,38 @@ export const AchievementsScreen: React.FC<AchievementsScreenProps> = ({ onNaviga
             </p>
 
             <div className="pt-2 border-t border-dashed border-[#D8B5BD] flex items-center justify-between text-xs font-label-sm text-[#805365]">
-              <span>Verified Contest Standing</span>
-              <span className="font-accent-handwritten text-sm text-[#B97891]">Click for stamp</span>
+              <span className="font-semibold">Verified Contest Standing</span>
+              <span className="font-accent-handwritten text-sm text-[#B97891]">Click for wax seal</span>
             </div>
 
-            {/* Stamp Overlay */}
-            {stampedCard === 'algorithmia' && (
-              <div className="absolute bottom-3 right-4 transform rotate-[-12deg] pointer-events-none animate-fade-in">
-                <div className="w-16 h-16 rounded-full border-2 border-[#805365] border-dashed flex flex-col items-center justify-center bg-[#F8D7E2]/70 text-[#805365] shadow-xs">
-                  <span className="text-[9px] font-label-sm font-bold tracking-widest uppercase">
-                    VERIFIED
-                  </span>
-                  <span className="text-xs font-bold font-display-lg">2ND</span>
-                  <span className="text-[7px] font-label-sm">ALGORITHMIA</span>
-                </div>
-              </div>
-            )}
-          </div>
+            {/* Framer Motion Stamp Overlay Slam Effect */}
+            <AnimatePresence>
+              {stampedCard === 'algorithmia' && (
+                <motion.div
+                  initial={{ scale: 3, opacity: 0, rotate: -35 }}
+                  animate={{ scale: 1, opacity: 1, rotate: -12 }}
+                  exit={{ scale: 0.5, opacity: 0 }}
+                  transition={{ type: 'spring', stiffness: 500, damping: 15 }}
+                  className="absolute bottom-3 right-4 pointer-events-none"
+                >
+                  <div className="w-20 h-20 rounded-full border-2 border-[#805365] border-dashed flex flex-col items-center justify-center bg-[#F8D7E2]/85 text-[#805365] shadow-md backdrop-blur-2xs">
+                    <span className="text-[8px] font-label-sm font-bold tracking-widest uppercase">
+                      VERIFIED
+                    </span>
+                    <span className="text-sm font-bold font-display-lg leading-none my-0.5">2ND</span>
+                    <span className="text-[7px] font-label-sm tracking-wider">ALGORITHMIA</span>
+                    <span className="text-[9px]">★</span>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.div>
 
           {/* Academic Growth Keepsake */}
-          <div className="p-4 bg-[#FFFEFC] border border-[#D8B5BD] rounded-xs shadow-2xs rotate-[0.5deg]">
+          <motion.div
+            whileHover={{ scale: 1.01 }}
+            className="p-4 bg-[#FFFEFC] border border-[#D8B5BD] rounded-xs shadow-2xs rotate-[0.5deg]"
+          >
             <span className="font-label-sm text-[10px] text-[#805365] uppercase tracking-wider font-bold block mb-1">
               Academic Milestone
             </span>
@@ -104,7 +119,7 @@ export const AchievementsScreen: React.FC<AchievementsScreenProps> = ({ onNaviga
             <p className="font-body-md text-xs text-[#44343B] leading-relaxed mt-1">
               Strong performance in foundational coursework covering Digital Electronics, C Programming, Signal Processing, and Data Structures at Cummins College.
             </p>
-          </div>
+          </motion.div>
         </div>
 
         {/* Footer */}
@@ -135,8 +150,9 @@ export const AchievementsScreen: React.FC<AchievementsScreenProps> = ({ onNaviga
           {/* Stories */}
           <div className="space-y-3.5 mb-5">
             {DEBUGGING_STORIES.map((story, i) => (
-              <div
+              <motion.div
                 key={i}
+                whileHover={{ scale: 1.015, x: 2 }}
                 className="p-3.5 bg-[#FFFEFC] rounded-xs border border-[#D8B5BD] shadow-2xs hover:border-[#B97891] transition-colors"
               >
                 <div className="flex items-center gap-1.5 mb-1">
@@ -151,7 +167,7 @@ export const AchievementsScreen: React.FC<AchievementsScreenProps> = ({ onNaviga
                 <p className="text-xs font-body-md text-[#44343B] leading-relaxed bg-[#FFF8F0] p-2 rounded-2xs border border-[#D8B5BD]/50">
                   <span className="font-bold text-[#805365]">The fix: </span>{story.theFix}
                 </p>
-              </div>
+              </motion.div>
             ))}
           </div>
 
