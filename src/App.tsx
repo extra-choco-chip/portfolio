@@ -176,6 +176,35 @@ export default function App() {
         candlelightMode ? 'bg-[#f4ebd8]' : 'bg-[#fff8f0]'
       }`}
     >
+      {/* Branded Journal Loading Screen */}
+      <AnimatePresence>
+        {initialLoading && (
+          <motion.div
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.4 }}
+            className="fixed inset-0 z-50 bg-[#FFF8F0] flex flex-col items-center justify-center pointer-events-none"
+            aria-live="polite"
+          >
+            <motion.div
+              initial={{ scale: 0.85, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 1.05, opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="flex flex-col items-center"
+            >
+              <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-[#F8D7E2] to-[#ED9BB8] border-2 border-[#805365] flex items-center justify-center shadow-tactile mb-3">
+                <span className="font-display-lg text-2xl font-bold text-[#805365]">ID</span>
+              </div>
+              <h2 className="font-display-lg text-xl text-[#805365] font-bold">Ishana's Portfolio</h2>
+              <span className="font-accent-handwritten text-base text-[#B97891] mt-0.5">
+                Opening the journal...
+              </span>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Skip to Main Content Link for Accessibility */}
       <a
         href="#main-content"
