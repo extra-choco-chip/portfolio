@@ -290,11 +290,11 @@ export default function App() {
           <AnimatePresence mode="wait">
             <motion.div
               key={currentPage}
-              initial={{ opacity: 0, y: 16, scale: 0.985 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -16, scale: 0.985 }}
-              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-              className="w-full flex items-center justify-center"
+              initial={{ opacity: 0, y: 12, rotateY: -8, scale: 0.985 }}
+              animate={{ opacity: 1, y: 0, rotateY: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -10, rotateY: 8, scale: 0.985 }}
+              transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
+              className="w-full flex items-center justify-center journal-page-turn"
             >
               {currentPage === 'cover' && (
                 <CoverScreen

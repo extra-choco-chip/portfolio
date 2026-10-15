@@ -135,9 +135,14 @@ export const AboutScreen: React.FC<AboutScreenProps> = ({ onNavigate, onOpenLigh
             <p className="font-body-md text-sm sm:text-base text-[#44343B] leading-relaxed mb-3">
               My engineering journey is driven by hands-on curiosity. I spend my days working through algorithmic puzzles, competing in ICPC-style programming contests (securing 2nd place in Algorithmia), and building projects that bridge rigorous data thinking with joyful frontend craft.
             </p>
-            <p className="font-accent-handwritten text-lg text-[#805365] italic">
-              — Welcome to my digital journal! Take your time exploring the pages.
+            <p className="font-accent-handwritten text-base text-[#805365]">
+              — Welcome to my digital journal! Take your time leafing through the pages.
             </p>
+            <div className="flex justify-end mt-1">
+              <span className="font-cursive-calligraphy text-2xl text-[#805365] tracking-wide">
+                Ishana Datta
+              </span>
+            </div>
 
             {/* Social Links & Resume Row */}
             <div className="mt-4 pt-3 border-t border-dashed border-[#D8B5BD] flex flex-wrap items-center justify-between gap-2">

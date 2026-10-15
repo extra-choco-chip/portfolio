@@ -272,7 +272,7 @@ export const BotanicalPetalsCanvas: React.FC<BotanicalPetalsCanvasProps> = ({
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 pointer-events-none z-10 overflow-hidden"
+      className="fixed inset-0 pointer-events-none z-35 overflow-hidden"
       aria-hidden="true"
     />
   );
